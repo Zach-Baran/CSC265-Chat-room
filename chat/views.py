@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import UserCreationForm
+from .models import Messages
+from django.contrib.auth.models import User
 
-# Create your views here.
 
 
 def home(request):
@@ -26,3 +27,14 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'chat/register.html', {'form': form})
+
+@login_required
+def chatroom(request):
+    users = {
+        'users': User.objects.all()
+    }
+    messages = {
+        'messages': Messages.objects.all()
+    }
+
+    return render(request, 'chat/chatroom.html', messages)

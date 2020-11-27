@@ -1,0 +1,18 @@
+{% extends "chat/base.html" %}
+{% block content %}
+
+
+{% for chats in messages %}
+<div> {{chats.author}} at {{chats.date}} </div>
+<div> {{chats.content}} </div>
+
+{% endfor %}
+
+
+
+
+
+
+
+
+{% endblock %}
