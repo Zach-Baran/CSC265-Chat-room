@@ -28,6 +28,7 @@ def register(request):
         form = UserRegisterForm()
     return render(request, 'chat/register.html', {'form': form})
 
+
 @login_required
 def chatroom(request):
     users = {
