@@ -1,23 +1,55 @@
 {% extends "chat/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <h1>Register Page</h1>
-    <div class="content-section">
+      <div class= "container">
+        <div class = "row justify-content-center">
+            <h1>Register <i class="fas fa-user-plus"></i></h1>
+        </div>
         <form method="POST">
             {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Join Today</legend>
-                {{ form|crispy }}
-            </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Sign Up</button>
+            <div class = "row justify-content-center">
+                <div class = "form-group">
+                    {{ form.username }}
+                    {{ form.username.errors}}
+                </div>
+            </div>
+            <div class = "row justify-content-center">
+                <div class = "form-group">
+                    {{ form.password1 }}
+                    {{ form.password1.errors }}
+                </div>
+            </div>
+            <div class = "row justify-content-center">
+                <div class = "form-group">
+                    {{ form.password2 }}
+                    {{ form.password2.errors }}
+                </div>
+            </div>
+            <div class = "row justify-content-center">
+                <div class = "col"></div>
+                <div class = "col">
+                    {% if form.non_field_errors %}
+                        <ul class='form-errors'>
+                            {% for error in form.non_field_errors %}
+                                <li class="errorText">{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <button type="submit" class="btn btn-dark btn-block">Register</button>
+                </div>
+                <div class = "col"></div>
             </div>
         </form>
-        <div class="border-top pt-3">
-            <small class="text-muted">
-                Already Have An Account? <a class="ml-2" href="{% url 'chat-login' %}">Sign In</a>
-            </small>
+        <div class = "row justify-content-center">
+            <div class = "col"></div>
+            <div class = "col">
+                <form action = "{%  url 'chat-login' %}">
+                    <button type="submit" class="btn btn-dark btn-block" style = "margin-top: 20px">Already have an account?</button>
+                </form>
+            </div>
+            <div class = "col"></div>
         </div>
-    </div>
+      </div>
+
 {% endblock %}
-{% load crispy_forms_tags %}
+{% crispy form %}
