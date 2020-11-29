@@ -6,4 +6,6 @@
             <h3><a href="{% url 'chat-chatroom' chatroom.id %}">{{ chatroom.name }}</a> made in {{ chatroom.date }}</h3>
         </div>
     {% endfor %}
+
+    <a href="{% url 'chat-create' %}">Click here to create a chatroom</a>
 {% endblock %}

@@ -43,3 +43,9 @@ class UserLoginForm(AuthenticationForm):
             'id': 'passwordID',
         }
 ))
+
+
+class ChatForm(forms.ModelForm):
+    class Meta:
+        model = Chatroom
+        fields = ['name', 'token']

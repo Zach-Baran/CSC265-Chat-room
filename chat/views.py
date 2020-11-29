@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
-from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import UserRegisterForm
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from .forms import UserRegisterForm, ChatForm
 from .models import Messages, Chatroom
 from django.contrib.auth.models import User
 
@@ -11,27 +11,56 @@ from django.contrib.auth.models import User
 class HomeListView(LoginRequiredMixin, ListView):
     model = Chatroom
     template_name = 'chat/home.html'
-    paginate_by = 5
+    paginate_by = 20
 
     def get_queryset(self):
         user = self.request.user
         return user.chatroom_set.all()
 
 
-class ChatDetailView(DetailView):
+class ChatDetailView(LoginRequiredMixin,UserPassesTestMixin, DetailView):
     model = Chatroom
     template_name = 'chat/chatroom.html'
 
+    # denies entry to none subscribers of the chat
+    def test_func(self):
+        chat = self.get_object()
+        if self.request.user in chat.subscribers.all():
+            return True
+
+    # modifies the context dictionary
     def get_context_data(self, **kwargs):
         context = super(ChatDetailView, self).get_context_data(**kwargs)
 
-        # Query Messages
+        # Obtain Chatroom Object
         id = self.kwargs.get('pk')
         chat = Chatroom.objects.get(id=id)
+
+        # Query Messages
         chat_messages = chat.messages_set.all()
 
+        # Query Chat Users
+        chat_users = chat.subscribers.all()
+
         context['chat_messages'] = chat_messages
+        context['chat_users'] = chat_users
         return context
+
+
+class ChatCreateView(LoginRequiredMixin, CreateView):
+    model = Chatroom
+    form_class = ChatForm
+    template_name = 'chat/chatroom-create.html'
+
+    # Setting the Chat Room Host and Subscriber
+    def form_valid(self, form):
+        form.instance.host = self.request.user
+        obj = form.save(commit=True)
+
+        # adds the user to the subscribers list
+        obj.subscribers.add(self.request.user)
+        obj.save()
+        return super().form_valid(form)
 
 
 def about(request):
