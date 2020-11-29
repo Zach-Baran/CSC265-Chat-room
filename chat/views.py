@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from .forms import UserRegisterForm, ChatForm
+from .forms import UserRegisterForm, ChatForm, SendMessage
 from .models import Messages, Chatroom
 from django.contrib.auth.models import User
 
@@ -79,3 +79,20 @@ def register(request):
     else:
         form = UserRegisterForm()
     return render(request, 'chat/register.html', {'form': form})
+  
+  
+# @login_required
+# def chatroom(request):
+#     tmp = Messages.objects.all()
+#     context = {
+#         'tmp': Messages.objects.all()
+#     }
+
+#     message = SendMessage(request.POST or None)
+#     if request.method=='POST':
+#         if message.is_valid():
+#             message.save()
+#     else:
+#         message = SendMessage()
+
+#     return render(request, 'chat/chatroom.html', {'context':tmp,'message':message})

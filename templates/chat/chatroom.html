@@ -1,5 +1,6 @@
 {% extends "chat/base.html" %}
 {% block content %}
+<!-- 
     <h1>Chatroom Name: {{ chatroom.name }}</h1>
 
     <!-- Chat Messages-->
@@ -23,5 +24,56 @@
             {{ user }}
         {% endif %}
         </div>
-    {% endfor %}
+    {% endfor %} -->
+
+<div class = "container-fluid">
+        <div class="row justify-content-center">
+            <h1>Chat Name</h1>
+        </div>
+        <div class = "row my-3 no-gutters">
+            <div class ="col-lg-9">
+                <div class="row-fluid border border-dark">
+                    <div class ="scroll-area-1">
+                        <div class="chat-area-1">
+                            <div class="chat-area-2">
+                                {% for chats in context %}
+
+                                <div> {{chats.author}} at {{chats.date}}</div>
+                                <div>{{chats.content}}</div>
+
+                                {% endfor %}
+                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class ="row-fluid border border-dark">
+                    <div class = "send-message">
+                        <form action="/chatroom/" method="post">
+                            {% csrf_token %}
+                            <div class="form-group row" style="margin-top:20px">
+                                <div class = "col-md-8">
+                                    <!--Input for sending messages-->
+                                    {{message}}
+                                </div>
+                                <div class="col" style ="margin-right:25px">
+                                    <!--Button to send message-->
+                                    <button type="submit" value ="submit" class="btn btn-dark btn-block">Send <i class="far fa-paper-plane"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class = "col-lg-3 border border-dark">
+                <div class="scroll-area-2">
+                    <div class="chat-area-1">
+                        <div class="chat-area-2">
+                            <h1 style="text-align:center">User List <i class="fas fa-users"></i></h1>
+                            <!--Users to be listed here-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
