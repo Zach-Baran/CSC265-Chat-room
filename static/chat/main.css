@@ -31,6 +31,35 @@ ul {
   margin: 0;
 }
 
+.scroll-area-1{
+  height: 500px;
+  position: relative;
+}
+.scroll-area-2{
+  height: 580px;
+  position: relative;
+}
+
+
+.chat-area-1{
+  max-height:100%;
+  overflow:auto;
+}
+
+.chat-area-2{
+  height:750px;
+}
+
+.username{
+  margin-left:10px;
+  margin-right:0px;
+  padding-right:0px;
+  top:5px;
+}
+.send-message{
+  height:60px;
+}
+
 .bg-steel {
   background-color: #5f788a;
 }
@@ -215,3 +244,22 @@ a.article-title:hover {
   :-ms-input-placeholder {
      color: #ecf0f1;
   }
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
