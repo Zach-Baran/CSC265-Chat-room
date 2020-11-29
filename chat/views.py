@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
+from django.views.generic.edit import FormMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .forms import UserRegisterForm, ChatForm, SendMessage
 from .models import Messages, Chatroom
@@ -15,18 +17,22 @@ class HomeListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         user = self.request.user
-        return user.chatroom_set.all()
+        return user.subscribed_to.all()
 
 
-class ChatDetailView(LoginRequiredMixin,UserPassesTestMixin, DetailView):
+class ChatDetailView(LoginRequiredMixin, UserPassesTestMixin, FormMixin, DetailView):
     model = Chatroom
     template_name = 'chat/chatroom.html'
+    form_class = SendMessage
 
     # denies entry to none subscribers of the chat
     def test_func(self):
         chat = self.get_object()
         if self.request.user in chat.subscribers.all():
             return True
+
+    def get_success_url(self):
+        return reverse_lazy('chat-chatroom', kwargs={'pk': self.object.pk})
 
     # modifies the context dictionary
     def get_context_data(self, **kwargs):
@@ -44,7 +50,28 @@ class ChatDetailView(LoginRequiredMixin,UserPassesTestMixin, DetailView):
 
         context['chat_messages'] = chat_messages
         context['chat_users'] = chat_users
+        context['form'] = self.get_form()
         return context
+
+    def post(self,request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        # Obtain Chatroom Object
+        id = self.kwargs.get('pk')
+        chat = Chatroom.objects.get(id=id)
+
+        comment = form.save(commit=False)
+        comment.author = self.request.user
+        comment.chatroom = chat
+        comment.save()
+
+        return super(ChatDetailView,self).form_valid(form)
 
 
 class ChatCreateView(LoginRequiredMixin, CreateView):
@@ -61,6 +88,12 @@ class ChatCreateView(LoginRequiredMixin, CreateView):
         obj.subscribers.add(self.request.user)
         obj.save()
         return super().form_valid(form)
+
+
+class ChatUpdateView(LoginRequiredMixin, UpdateView):
+    model = Chatroom
+    template_name = 'chat/chatroom-update.html'
+    fields = ['title']
 
 
 def about(request):
@@ -80,19 +113,3 @@ def register(request):
         form = UserRegisterForm()
     return render(request, 'chat/register.html', {'form': form})
   
-  
-# @login_required
-# def chatroom(request):
-#     tmp = Messages.objects.all()
-#     context = {
-#         'tmp': Messages.objects.all()
-#     }
-
-#     message = SendMessage(request.POST or None)
-#     if request.method=='POST':
-#         if message.is_valid():
-#             message.save()
-#     else:
-#         message = SendMessage()
-
-#     return render(request, 'chat/chatroom.html', {'context':tmp,'message':message})
