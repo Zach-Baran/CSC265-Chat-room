@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 
 class Profile(models.Model):
@@ -12,9 +13,14 @@ class Profile(models.Model):
 
 
 class Chatroom(models.Model):
-    host = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
-    token = models.CharField(max_length=6,null= False)
+    host = models.ForeignKey(User, on_delete=models.CASCADE)
+    subscribers = models.ManyToManyField(User, blank=True, related_name='subscribed_to')
+    name = models.CharField(max_length=25, null=False)
+    token = models.CharField(max_length=6, null=False)
     date = models.DateTimeField(default=timezone.now)
+
+    def get_absolute_url(self):
+        return reverse('chat-chatroom', kwargs={'pk': self.pk})
 
 
 class Messages(models.Model):

@@ -1,5 +1,30 @@
 {% extends "chat/base.html" %}
 {% block content %}
+<!-- 
+    <h1>Chatroom Name: {{ chatroom.name }}</h1>
+
+    <!-- Chat Messages-->
+    {% for message in chat_messages %}
+        <div>
+            <h5>{{ message.author }} @{{ message.date }}</h5>
+            <div>
+                {{ message.content }}
+            </div>
+        </div>
+        <br>
+    {% endfor %}
+
+    <!-- Chat Users-->
+    <h2>Users</h2>
+    {% for user in chat_users %}
+        <div>
+        {% if user == chatroom.host %}
+            [{{ user }}] ~~ Host
+        {% else %}
+            {{ user }}
+        {% endif %}
+        </div>
+    {% endfor %} -->
 
 <div class = "container-fluid">
         <div class="row justify-content-center">
@@ -51,5 +76,4 @@
             </div>
         </div>
     </div>
-
 {% endblock %}

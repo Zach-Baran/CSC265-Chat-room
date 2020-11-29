@@ -44,8 +44,16 @@ class UserLoginForm(AuthenticationForm):
         }
 ))
 
+
+
+class ChatForm(forms.ModelForm):
+    class Meta:
+        model = Chatroom
+        fields = ['name', 'token']
+
 class SendMessage(forms.ModelForm):
     class Meta:
         model = Messages
         fields = ('author','content',)
         
+
