@@ -18,7 +18,7 @@ class HomeListView(LoginRequiredMixin, ListView):
         return user.chatroom_set.all()
 
 
-class ChatDetailView(LoginRequiredMixin,UserPassesTestMixin, DetailView):
+class ChatDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Chatroom
     template_name = 'chat/chatroom.html'
 
@@ -61,6 +61,12 @@ class ChatCreateView(LoginRequiredMixin, CreateView):
         obj.subscribers.add(self.request.user)
         obj.save()
         return super().form_valid(form)
+
+
+class ChatUpdateView(LoginRequiredMixin, UpdateView):
+    model = Chatroom
+    template_name = 'chat/chatroom-update.html'
+    fields = ['title']
 
 
 def about(request):
