@@ -35,6 +35,18 @@ ul {
   background-color: #5f788a;
 }
 
+.SendMessage {
+  margin-top:100px;
+  margin-left: 300px;
+}
+
+.messageHistory {
+  text-align: center;
+  width: 500px;
+  height:300px;
+  overflow: scroll;
+}
+
 .site-header .navbar-nav .nav-link {
   color: #cbd5db;
     font-family: "Roboto";

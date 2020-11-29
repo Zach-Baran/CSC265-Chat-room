@@ -1,11 +1,22 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import UserRegisterForm
+from .forms import UserRegisterForm, SendMessage
 from .models import Messages
 from django.contrib.auth.models import User
 
-
+posts = [
+    {
+    'author':'testing',
+    'content':'hhgfdhgfdhfgd',
+    'date': '3/2/21'
+    },
+    {
+    'author':'zach',
+    'content':'321321321',
+    'date':'3/21/23'
+    }
+]
 
 def home(request):
     return render(request, 'chat/home.html')
@@ -31,11 +42,16 @@ def register(request):
 
 @login_required
 def chatroom(request):
-    users = {
-        'users': User.objects.all()
-    }
-    messages = {
-        'messages': Messages.objects.all()
+    tmp = Messages.objects.all()
+    context = {
+        'tmp': Messages.objects.all()
     }
 
-    return render(request, 'chat/chatroom.html', messages)
+    message = SendMessage(request.POST or None)
+    if request.method=='POST':
+        if message.is_valid():
+            message.save()
+    else:
+        message = SendMessage()
+
+    return render(request, 'chat/chatroom.html', {'context':tmp,'message':message})

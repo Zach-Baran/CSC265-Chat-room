@@ -1,18 +1,22 @@
 {% extends "chat/base.html" %}
 {% block content %}
 
+<div class = "messageHistory">
+{% for chats in context %}
 
-{% for chats in messages %}
-<div> {{chats.author}} at {{chats.date}} </div>
-<div> {{chats.content}} </div>
+<div> {{chats.author}} at {{chats.date}}</div>
+<div>{{chats.content}}</div>
 
 {% endfor %}
+</div>
 
 
-
-
-
-
-
+<div class = "SendMessage">
+<form action="/chatroom/" method="post">
+    {% csrf_token %}
+      {{message}}
+    <input type = "submit" value = "Submit">
+</form>
+</div>
 
 {% endblock %}
