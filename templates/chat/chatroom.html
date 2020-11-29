@@ -1,18 +1,14 @@
 {% extends "chat/base.html" %}
 {% block content %}
+    <h1>Chatroom Name: {{ chatroom.name }}</h1>
 
-
-{% for chats in messages %}
-<div> {{chats.author}} at {{chats.date}} </div>
-<div> {{chats.content}} </div>
-
-{% endfor %}
-
-
-
-
-
-
-
-
+    {% for message in chat_messages %}
+        <div>
+            <h5>{{ message.author }}</h5>
+            <div>
+                {{ message.content }}
+            </div>
+        </div>
+        <br>
+    {% endfor %}
 {% endblock %}

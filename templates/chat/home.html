@@ -1,4 +1,9 @@
 {% extends "chat/base.html" %}
 {% block content %}
     <h1>HOME PAGE</h1>
+    {% for chatroom in chatroom_list %}
+        <div>
+            <h3><a href="{% url 'chat-chatroom' chatroom.id %}">{{ chatroom.name }}</a> made in {{ chatroom.date }}</h3>
+        </div>
+    {% endfor %}
 {% endblock %}

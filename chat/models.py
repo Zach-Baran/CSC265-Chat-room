@@ -12,8 +12,10 @@ class Profile(models.Model):
 
 
 class Chatroom(models.Model):
-    host = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
-    token = models.CharField(max_length=6,null= False)
+    host = models.ForeignKey(User, on_delete=models.CASCADE)
+    subscribers = models.ManyToManyField(User, blank=True, related_name='subscribed_to')
+    name = models.CharField(max_length=25, null=False)
+    token = models.CharField(max_length=6, null=False)
     date = models.DateTimeField(default=timezone.now)
 
 
