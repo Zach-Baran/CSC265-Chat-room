@@ -5,8 +5,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.db import models
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
-from .models import Profile
-from .models import Chatroom
+from .models import Profile, Chatroom, Messages
+
 
 class UserRegisterForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
@@ -45,7 +45,15 @@ class UserLoginForm(AuthenticationForm):
 ))
 
 
+
 class ChatForm(forms.ModelForm):
     class Meta:
         model = Chatroom
         fields = ['name', 'token']
+
+class SendMessage(forms.ModelForm):
+    class Meta:
+        model = Messages
+        fields = ('author','content',)
+        
+
