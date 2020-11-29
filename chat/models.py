@@ -22,9 +22,14 @@ class Chatroom(models.Model):
     def get_absolute_url(self):
         return reverse('chat-chatroom', kwargs={'pk': self.pk})
 
+    def __str__(self):
+        return f'{self.name}'
+
 
 class Messages(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    #chatroom =  models.TextField(max_length=500)
-    content = models.CharField(max_length=500)
+    chatroom = models.ForeignKey(Chatroom, on_delete=models.CASCADE)
+    content = models.TextField(max_length=500)
     date = models.DateTimeField(default=timezone.now)
+
+
