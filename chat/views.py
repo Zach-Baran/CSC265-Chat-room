@@ -5,18 +5,6 @@ from .forms import UserRegisterForm, SendMessage
 from .models import Messages
 from django.contrib.auth.models import User
 
-posts = [
-    {
-    'author':'testing',
-    'content':'hhgfdhgfdhfgd',
-    'date': '3/2/21'
-    },
-    {
-    'author':'zach',
-    'content':'321321321',
-    'date':'3/21/23'
-    }
-]
 
 def home(request):
     return render(request, 'chat/home.html')
