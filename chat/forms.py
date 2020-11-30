@@ -48,12 +48,19 @@ class UserLoginForm(AuthenticationForm):
 class ChatForm(forms.ModelForm):
     class Meta:
         model = Chatroom
-        fields = ['name', 'token']
+        fields = ['name', ]
 
 
 class SendMessage(forms.ModelForm):
     class Meta:
         model = Messages
         fields = ('content',)
+
+
+class JoinChatForm(forms.Form):
+        token = forms.CharField(label='search', max_length=6, widget=forms.TextInput(attrs={'placeholder': 'Input Chat Room Token'}))
+
+
+
         
 

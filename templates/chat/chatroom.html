@@ -4,7 +4,7 @@
 
 <div class = "container-fluid">
         <div class="row justify-content-center">
-            <h1>{{ chatroom.name }}</h1>
+            <h1>{{ chatroom.name }} [{{ chatroom.token }}]</h1>
         </div>
         <!-- Checks if the user is the host of the chatroom b4 displaying update/delete btn -->
         {% if object.host == user %}
