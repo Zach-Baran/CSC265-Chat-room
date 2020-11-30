@@ -6,6 +6,15 @@
         <div class="row justify-content-center">
             <h1>{{ chatroom.name }}</h1>
         </div>
+        <!-- Checks if the user is the host of the chatroom b4 displaying update/delete btn -->
+        {% if object.host == user %}
+            <div class="row justify-content-center">
+                <h5>
+                    <a class="btn btn-info" href="{% url 'chat-chatroom-update' object.id %}">Update</a>
+                    <a class="btn btn-danger" href="{% url 'chat-chatroom-delete' object.id %}">Delete</a>
+                </h5>
+            </div>
+        {% endif %}
         <div class = "row my-3 no-gutters">
             <div class ="col-lg-9">
                 <div class="row-fluid border border-dark">
@@ -29,11 +38,14 @@
                             <div class="form-group row" style="margin-top:20px">
                                 <div class = "col-md-8">
                                     <!--Input for sending messages-->
-                                    {{ form|crispy }}
+                                    <div>
+                                        {{ form.content }}
+                                    </div>
+
                                 </div>
                                 <div class="col" style ="margin-right:25px">
                                     <!--Button to send message-->
-                                    <button type="submit"  class="btn btn-dark btn-block">Send <i class="far fa-paper-plane"></i></button>
+                                    <button type="submit" value ="submit" class="btn btn-dark btn-block">Send <i class="far fa-paper-plane"></i></button>
                                 </div>
                             </div>
                         </form>

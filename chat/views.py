@@ -90,10 +90,26 @@ class ChatCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ChatUpdateView(LoginRequiredMixin, UpdateView):
+class ChatUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Chatroom
     template_name = 'chat/chatroom-update.html'
-    fields = ['title']
+    fields = ['name']
+
+    def test_func(self):
+        chat = self.get_object()
+        if chat.host == self.request.user:
+            return True
+
+
+class ChatDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Chatroom
+    template_name = 'chat/chatroom-confirm-delete.html'
+    success_url = '/'
+
+    def test_func(self):
+        chat = self.get_object()
+        if chat.host == self.request.user:
+            return True
 
 
 def about(request):
