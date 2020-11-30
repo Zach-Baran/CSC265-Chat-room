@@ -21,7 +21,7 @@ class Chatroom(models.Model):
     date = models.DateTimeField(default=timezone.now)
 
     def get_absolute_url(self):
-        return reverse('chat-chatroom', kwargs={'pk': self.pk})
+        return reverse('chat-chatroom', kwargs={'token': self.token})
 
     def __str__(self):
         return f'{self.name}'

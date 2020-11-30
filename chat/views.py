@@ -24,8 +24,8 @@ class ChatDetailView(LoginRequiredMixin, UserPassesTestMixin, FormMixin, DetailV
     model = Chatroom
     template_name = 'chat/chatroom.html'
     form_class = SendMessage
-    # slug_field = 'token'
-    # slug_url_kwarg = 'token'
+    slug_field = 'token'
+    slug_url_kwarg = 'token'
 
     # denies entry to none subscribers of the chat
     def test_func(self):
@@ -34,15 +34,15 @@ class ChatDetailView(LoginRequiredMixin, UserPassesTestMixin, FormMixin, DetailV
             return True
 
     def get_success_url(self):
-        return reverse_lazy('chat-chatroom', kwargs={'pk': self.object.id})
+        return reverse_lazy('chat-chatroom', kwargs={'token': self.object.token})
 
     # modifies the context dictionary
     def get_context_data(self, **kwargs):
         context = super(ChatDetailView, self).get_context_data(**kwargs)
 
         # Obtain Chatroom Object
-        id = self.kwargs.get('pk')
-        chat = Chatroom.objects.get(pk=id)
+        token = self.kwargs.get('token')
+        chat = Chatroom.objects.get(token=token)
 
         # Query Messages
         chat_messages = chat.messages_set.all()
@@ -65,8 +65,8 @@ class ChatDetailView(LoginRequiredMixin, UserPassesTestMixin, FormMixin, DetailV
 
     def form_valid(self, form):
         # Obtain Chatroom Object
-        id = self.kwargs.get('pk')
-        chat = Chatroom.objects.get(pk=id)
+        token = self.kwargs.get('token')
+        chat = Chatroom.objects.get(token=token)
 
         comment = form.save(commit=False)
         comment.author = self.request.user
@@ -80,6 +80,8 @@ class ChatCreateView(LoginRequiredMixin, CreateView):
     model = Chatroom
     form_class = ChatForm
     template_name = 'chat/chatroom-create.html'
+    slug_field = 'token'
+    slug_url_kwarg = 'token'
 
     # Setting the Chat Room Host and Subscriber
     def form_valid(self, form):
@@ -96,6 +98,8 @@ class ChatUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Chatroom
     template_name = 'chat/chatroom-update.html'
     fields = ['name']
+    slug_field = 'token'
+    slug_url_kwarg = 'token'
 
     def test_func(self):
         chat = self.get_object()
@@ -107,6 +111,8 @@ class ChatDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Chatroom
     template_name = 'chat/chatroom-confirm-delete.html'
     success_url = '/'
+    slug_field = 'token'
+    slug_url_kwarg = 'token'
 
     def test_func(self):
         chat = self.get_object()
@@ -138,7 +144,7 @@ def joinChat(request):
         if form.is_valid():
             chat = Chatroom.objects.get(token=form.cleaned_data['token'])
             chat.subscribers.add(request.user)
-            return redirect('chat-chatroom', chat.pk)
+            return redirect('chat-chatroom', chat.token)
     else:
         form = JoinChatForm()
-    return render(request, 'chat/chatroom-join.html', context={'form':form})
+    return render(request, 'chat/chatroom-join.html', context={'form': form})
