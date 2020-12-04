@@ -3,71 +3,67 @@
 {% block content %}
 
 <div class = "container-fluid">
-        <div class="row justify-content-center">
-            <h1>{{ chatroom.name }} [{{ chatroom.token }}]</h1>
-        </div>
-        <!-- Checks if the user is the host of the chatroom b4 displaying update/delete btn -->
-        {% if object.host == user %}
+    <div class="row justify-content-center">
+        <h1>{{ chatroom.name }} [{{ chatroom.token }}] </h1>
+    </div>
+    {% if object.host == user %}
             <div class="row justify-content-center">
                 <h5>
-                    <a class="btn btn-info" href="{% url 'chat-chatroom-update' object.token %}">Update</a>
-                    <a class="btn btn-danger" href="{% url 'chat-chatroom-delete' object.token %}">Delete</a>
+                    <a class="btn btn-info" href="{% url 'chat-chatroom-update' object.token %}">Update <i class="far fa-edit"></i></a>
+                    <a class="btn btn-danger" href="{% url 'chat-chatroom-delete' object.token %}">Delete <i class="far fa-trash-alt"></i></a>
                 </h5>
             </div>
-        {% else %}
+    {% else %}
             <div class="row justify-content-center">
                 <h5>
                     <a class="btn btn-info" href="{% url 'chat-chatroom-leave' object.token %}">Leave</a>
                 </h5>
             </div>
-        {% endif %}
-        <div class = "row my-3 no-gutters">
-            <div class ="col-lg-9">
-                <div class="row-fluid border border-dark">
-                    <div class ="scroll-area-1">
-                        <div class="chat-area-1">
-                            <div class="chat-area-2">
-                                {% for message in chat_messages %}
-
-                                <div> {{message.author}} at {{message.date}}</div>
-                                <div>{{message.content}}</div>
-
-                                {% endfor %}
-                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class ="row-fluid border border-dark">
-                    <div class = "send-message">
-                        <form method="POST" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <div class="form-group row" style="margin-top:20px">
-                                <div class = "col-md-8">
-                                    <!--Input for sending messages-->
-                                    <div>
-                                        {{ form.content }}
-                                    </div>
-
-                                </div>
-                                <div class="col" style ="margin-right:25px">
-                                    <!--Button to send message-->
-                                    <button type="submit" value ="submit" class="btn btn-dark btn-block">Send <i class="far fa-paper-plane"></i></button>
-                                </div>
+    {% endif %}
+    <div class = "row my-3 no-gutters">
+        <div class ="col-lg-9">
+            <div class="row-fluid rounded-border">
+                <div class ="scroll-area-1">
+                    <div class="chat-area-1">
+                        <div class="chat-area-2">
+                            <div class="message-history">
                             </div>
-                        </form>
+                         </div>
                     </div>
                 </div>
             </div>
-            <div class = "col-lg-3 border border-dark">
-                <div class="scroll-area-2">
-                    <div class="chat-area-1">
-                        <div class="chat-area-2">
+            <div class ="row-fluid no-gutters rounded-border ">
+                <div class = "send-message">
+                    <form method="POST" class = "send-message-form" enctype="multipart/form-data" >
+                        {% csrf_token %}
+                        <div class="form-group row" style="margin-top:20px">
+                            <div class =" col-md-1" style ="text-align: right">
+                                {{  user }}:
+                            </div>
+                            <div class = "col-md-8" style="padding-left:0px">
+                                <!--Input for sending messages-->
+                                {{ form.content }}
+                            </div>
+                            <div class="col" style ="margin-right:25px">
+                                <!--Button to send message-->
+                                <button type="submit"  class="btn btn-dark btn-block">Send <i class="far fa-paper-plane"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class = "col-lg-3 rounded-border">
+            <div class="scroll-area-2">
+                <div class="chat-area-1">
+                    <div class="chat-area-2">
+                        <div class = "centered-inconsolata">
                             <h1 style="text-align:center">User List <i class="fas fa-users"></i></h1>
                             <!--Users to be listed here-->
                             {% for user in chat_users %}
                                 <div>
                                 {% if user == chatroom.host %}
-                                    [{{ user }}] ~~ Host
+                                    {{ user }} <i class="fas fa-crown"></i>
                                 {% else %}
                                     {{ user }}
                                 {% endif %}
@@ -79,4 +75,63 @@
             </div>
         </div>
     </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+
+
+function worker() {
+  $.ajax({
+    url: window.location.href + 'query/',
+    success: function(data) {
+        for (i in data) {
+            if (readMessages.includes(data[i].id)) {
+                continue;
+            } else {
+                content = data[i].content
+                author = data[i].author
+                date = data[i].date
+                messageString = date + ' - ' + author + ': ' + content;
+                readMessages.push(data[i].id)
+                $('.message-history').append('</br>' + messageString)
+                var messageBody = document.querySelector('.chat-area-1');
+                messageBody.scrollTop = messageBody.scrollHeight - messageBody.clientHeight;
+            }
+        }
+    },
+    complete: function() {
+      // Schedule the next request when the current one's complete
+      setTimeout(worker, 2500);
+    }
+  });
+}
+
+$('#send-message-form').on('submit', function (e) {
+    console.log('form submitted')
+        e.preventDefault();
+         $.ajax({
+            type: 'POST',
+            url: window.location.href + '/rerererer/',
+            data: {
+                message : $('#messageInput').val()
+            },
+             success: function(res, status){
+                console.log(res);
+                console.log(status);
+             },
+             error:function(res){
+                console.log(res);
+
+             }
+         });
+    });
+
+$(document).ready(function(){
+    worker()
+    readMessages = []
+});
+
+
+</script>
 {% endblock %}

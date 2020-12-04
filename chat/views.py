@@ -1,3 +1,4 @@
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -7,11 +8,12 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView, FormView
 from django.views.generic.detail import  SingleObjectMixin
-from django.views.generic.edit import FormMixin
+from django.views.generic.edit import FormMixin, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.hashers import check_password
 from .forms import UserRegisterForm, ChatForm, SendMessage, JoinChatForm
 from .models import Messages, Chatroom
+from .utils import AjaxableResponseMixin
 from django.contrib.auth.models import User
 
 
@@ -97,6 +99,7 @@ class ChatDetail(View):
         return view(request, *args, **kwargs)
 
 
+
 class ChatCreateView(LoginRequiredMixin, CreateView):
     model = Chatroom
     form_class = ChatForm
@@ -145,6 +148,8 @@ class ChatDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             return True
 
 
+
+
 def about(request):
     return render(request, 'chat/about.html')
 
@@ -161,7 +166,28 @@ def register(request):
     else:
         form = UserRegisterForm()
     return render(request, 'chat/register.html', {'form': form})
+  
 
+def ajax_process(request, **kwargs):
+    token = kwargs.get('token')
+    chat = Chatroom.objects.get(token=token)
+    chat_messages = chat.messages_set.all()
+    allData = []
+    for message in chat_messages:
+        string = str(message.date)
+        timestamp = string[11:19]
+        data = {
+            'content' : message.content,
+            'author' : message.author.username,
+            'date' : timestamp,
+            'id' : message.id
+        }
+        allData.append(data)
+
+    return JsonResponse(allData, safe=False)
+
+def messageProcess(request, **kwargs):
+    print('ayo')
 
 @login_required()
 def joinChat(request):

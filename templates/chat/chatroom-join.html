@@ -1,16 +1,23 @@
 {% extends "chat/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="content-section">
-        <form method="POST" enctype="multipart/form-data">
-         {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Join Chat</legend>
-                {{ form|crispy }}
-            </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Join</button>
-            </div>
-        </form>
+    <div class = "row justify-content-center">
+    <div class = "col">
+    </div>
+        <div class = "col" style="text-align:center">
+        <h1 >Join chatroom! <i class="far fa-comments"></i></h1>
+        </br>
+        <p style="color:white">There is a 6-character token associated with every chatroom. Enter the token of the chatroom you would like to join.</p>
+         <form method = "POST">
+                {% csrf_token %}
+                <div class = "row justify-content-center">
+                    <div class = "form-group">
+                        {{ form.token }}
+                        <button type="submit" class="btn btn-dark btn-block">Join</button>
+                    </div>
+                </div>
+         </form>
+        </div>
+    <div class = "col"></div>
     </div>
 {% endblock %}
