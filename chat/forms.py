@@ -59,7 +59,7 @@ class SendMessage(forms.ModelForm):
 
 class JoinChatForm(forms.Form):
         token = forms.CharField(label='search', max_length=6, widget=forms.TextInput(attrs={'placeholder': 'Input Chat Room Token'}))
-        password = forms.CharField(label='password', max_length=25)
+        password = forms.CharField(label='password', max_length=25, widget=forms.PasswordInput())
 
 
         

@@ -115,13 +115,16 @@ class ChatCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-
 class ChatUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Chatroom
     template_name = 'chat/chatroom-update.html'
-    fields = ['name']
+    fields = ['name', 'password']
     slug_field = 'token'
     slug_url_kwarg = 'token'
+
+    def get_form(self, form_class=JoinChatForm):
+        form = form_class
+        return form
 
     def test_func(self):
         chat = self.get_object()
