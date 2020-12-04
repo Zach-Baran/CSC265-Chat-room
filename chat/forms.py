@@ -54,7 +54,7 @@ class ChatForm(forms.ModelForm):
 
     class Meta:
         model = Chatroom
-        fields = ['name', ]
+        fields = ['name', 'password']
 
 
 class SendMessage(forms.ModelForm):
@@ -73,6 +73,4 @@ class JoinChatForm(forms.Form):
         super(JoinChatForm, self).__init__(*args, **kwargs)
 
     token = forms.CharField(label='search', max_length=6, widget=forms.TextInput(attrs={'class': 'formStyle', 'placeholder': 'Input Chat Room Token'}))
-
-
-
+    password = forms.CharField(label='password', max_length=25, widget=forms.PasswordInput())
