@@ -1,9 +1,10 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
-from django.views.generic.edit import FormMixin
+from django.views.generic.edit import FormMixin, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .forms import UserRegisterForm, ChatForm, SendMessage
 from .models import Messages, Chatroom
@@ -53,13 +54,15 @@ class ChatDetailView(LoginRequiredMixin, UserPassesTestMixin, FormMixin, DetailV
         context['form'] = self.get_form()
         return context
 
-    def post(self,request, *args, **kwargs):
+
+    def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form = self.get_form()
         if form.is_valid():
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
+
 
     def form_valid(self, form):
         # Obtain Chatroom Object
@@ -71,8 +74,7 @@ class ChatDetailView(LoginRequiredMixin, UserPassesTestMixin, FormMixin, DetailV
         comment.chatroom = chat
         comment.save()
 
-        return super(ChatDetailView,self).form_valid(form)
-
+        return super(ChatDetailView, self).form_valid(form)
 
 class ChatCreateView(LoginRequiredMixin, CreateView):
     model = Chatroom
@@ -113,3 +115,19 @@ def register(request):
         form = UserRegisterForm()
     return render(request, 'chat/register.html', {'form': form})
   
+
+def ajax_process(request, pk):
+    chat = Chatroom.objects.get(id=pk)
+    chat_messages = chat.messages_set.all()
+    allData = []
+    for message in chat_messages:
+        data = {
+            'content' : message.content,
+            'author' : message.author.username,
+            'date' : message.date,
+            'id' : message.id
+        }
+        allData.append(data)
+
+    return JsonResponse(allData, safe=False)
+

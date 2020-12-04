@@ -3,62 +3,92 @@
 {% block content %}
 
 <div class = "container-fluid">
-        <div class="row justify-content-center">
-            <h1>{{ chatroom.name }}</h1>
-        </div>
-        <div class = "row my-3 no-gutters">
-            <div class ="col-lg-9">
-                <div class="row-fluid border border-dark">
-                    <div class ="scroll-area-1">
-                        <div class="chat-area-1">
-                            <div class="chat-area-2">
-                                {% for message in chat_messages %}
+    <div class="row justify-content-center">
+        <h1>{{ chatroom.name }}</h1>
+    </div>
+    <div class = "row my-3 no-gutters">
+        <div class ="col-lg-9">
+            <div class="row-fluid border border-dark">
+                <div class ="scroll-area-1">
+                    <div class="chat-area-1">
+                        <div class="chat-area-2">
+                            <div class="message-area">
 
-                                <div> {{message.author}} at {{message.date}}</div>
-                                <div>{{message.content}}</div>
-
-                                {% endfor %}
-                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class ="row-fluid border border-dark">
-                    <div class = "send-message">
-                        <form method="POST" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <div class="form-group row" style="margin-top:20px">
-                                <div class = "col-md-8">
-                                    <!--Input for sending messages-->
-                                    {{ form|crispy }}
-                                </div>
-                                <div class="col" style ="margin-right:25px">
-                                    <!--Button to send message-->
-                                    <button type="submit"  class="btn btn-dark btn-block">Send <i class="far fa-paper-plane"></i></button>
-                                </div>
                             </div>
-                        </form>
+                         </div>
                     </div>
                 </div>
             </div>
-            <div class = "col-lg-3 border border-dark">
-                <div class="scroll-area-2">
-                    <div class="chat-area-1">
-                        <div class="chat-area-2">
-                            <h1 style="text-align:center">User List <i class="fas fa-users"></i></h1>
-                            <!--Users to be listed here-->
-                            {% for user in chat_users %}
-                                <div>
-                                {% if user == chatroom.host %}
-                                    [{{ user }}] ~~ Host
-                                {% else %}
-                                    {{ user }}
-                                {% endif %}
-                                </div>
-                            {% endfor %}
+            <div class ="row-fluid border border-dark">
+                <div class = "send-message">
+                    <form method="POST" class = "send-message-form" enctype="multipart/form-data" >
+                        {% csrf_token %}
+                        <div class="form-group row" style="margin-top:20px">
+                            <div class = "col-md-8">
+                                <!--Input for sending messages-->
+                                {{ form|crispy }}
+                            </div>
+                            <div class="col" style ="margin-right:25px">
+                                <!--Button to send message-->
+                                <button type="submit"  class="btn btn-dark btn-block">Send <i class="far fa-paper-plane"></i></button>
+                            </div>
                         </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class = "col-lg-3 border border-dark">
+            <div class="scroll-area-2">
+                <div class="chat-area-1">
+                    <div class="chat-area-2">
+                        <h1 style="text-align:center">User List <i class="fas fa-users"></i></h1>
+                        <!--Users to be listed here-->
+                        {% for user in chat_users %}
+                            <div>
+                            {% if user == chatroom.host %}
+                                [{{ user }}] ~~ Host
+                            {% else %}
+                                {{ user }}
+                            {% endif %}
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+
+function worker() {
+  $.ajax({
+    url: window.location.href + 'query/',
+    success: function(data) {
+        for (i in data) {
+            if (readMessages.includes(data[i].id)) {
+                continue;
+            } else {
+                content = data[i].content
+                author = data[i].author
+                date = data[i].date
+                messageString = date + ': ' + author + ' -- ' + content;
+                readMessages.push(data[i].id)
+                $('.message-area').append('</br>' + messageString)
+            }
+        }
+    },
+    complete: function() {
+      // Schedule the next request when the current one's complete
+      setTimeout(worker, 2500);
+    }
+  });
+}
+
+$(document).ready(function(){
+    readMessages = []
+setTimeout(worker, 2500);
+});
+</script>
 {% endblock %}

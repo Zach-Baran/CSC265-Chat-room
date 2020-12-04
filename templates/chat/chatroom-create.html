@@ -1,15 +1,35 @@
 {% extends "chat/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="content-section">
-        <form method="POST" enctype="multipart/form-data">
-         {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Create Chat Room</legend>
-                {{ form|crispy }}
-            </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Submit</button>
+    <div class="container">
+         <div class = "row justify-content-center">
+             <h1>Create Chatroom <i class="far fa-comments"></i></h1>
+         </div>
+        <form method = "POST">
+            {% csrf_token %}
+            <div class = "row justify-content-center">
+                <div class = "form-group">
+                    {{ form.name }}
+                </div>
+            </div>
+            <div class = "row justify-content-center">
+                <div class = "form-group">
+                    {{ form.token }}
+                </div>
+            </div>
+            <div class = "row justify-content-center" style="margin-bottom: 10px">
+                <div class = "col"></div>
+                <div class = "col">
+                    {% if form.non_field_errors %}
+                        <ul class='form-errors'>
+                            {% for error in form.non_field_errors %}
+                            <li class ="errorText">{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <button type="submit" class="btn btn-dark btn-block">Create Chatroom</button>
+                </div>
+                <div class = "col"></div>
             </div>
         </form>
     </div>

@@ -45,15 +45,29 @@ class UserLoginForm(AuthenticationForm):
 ))
 
 
+
 class ChatForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ChatForm, self).__init__(*args, **kwargs)
+
+    name = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'formStyle', 'placeholder': 'Chat name', 'id': 'nameID'}))
+    token = forms.CharField(widget=forms.TextInput(
+        attrs={
+            'class': 'formStyle',
+            'placeholder': 'Token',
+            'id': 'tokenID',
+        }
+    ))
+
     class Meta:
         model = Chatroom
         fields = ['name', 'token']
 
 
 class SendMessage(forms.ModelForm):
+
     class Meta:
         model = Messages
         fields = ('content',)
-        
 

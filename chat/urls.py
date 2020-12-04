@@ -12,4 +12,5 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='chat/logout.html'), name='chat-logout'),
     path('chatroom/<int:pk>/', ChatDetailView.as_view(), name='chat-chatroom'),
     path('chatroom/create/', ChatCreateView.as_view(), name='chat-create'),
+    path('chatroom/<int:pk>/query/', views.ajax_process, name='chat-get-messages')
 ]
