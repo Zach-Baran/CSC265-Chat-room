@@ -1,10 +1,15 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core import serializers
+from django.http import HttpResponse, JsonResponse
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
+from django.views import View
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView, FormView
+from django.views.generic.detail import  SingleObjectMixin
 from django.views.generic.edit import FormMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.hashers import check_password
 from .forms import UserRegisterForm, ChatForm, SendMessage, JoinChatForm
 from .models import Messages, Chatroom
 from django.contrib.auth.models import User
@@ -20,10 +25,9 @@ class HomeListView(LoginRequiredMixin, ListView):
         return user.subscribed_to.all()
 
 
-class ChatDetailView(LoginRequiredMixin, UserPassesTestMixin, FormMixin, DetailView):
+class ChatDisplay(LoginRequiredMixin,UserPassesTestMixin, DetailView):
     model = Chatroom
     template_name = 'chat/chatroom.html'
-    form_class = SendMessage
     slug_field = 'token'
     slug_url_kwarg = 'token'
 
@@ -33,12 +37,8 @@ class ChatDetailView(LoginRequiredMixin, UserPassesTestMixin, FormMixin, DetailV
         if self.request.user in chat.subscribers.all():
             return True
 
-    def get_success_url(self):
-        return reverse_lazy('chat-chatroom', kwargs={'token': self.object.token})
-
-    # modifies the context dictionary
     def get_context_data(self, **kwargs):
-        context = super(ChatDetailView, self).get_context_data(**kwargs)
+        context = super(ChatDisplay, self).get_context_data(**kwargs)
 
         # Obtain Chatroom Object
         token = self.kwargs.get('token')
@@ -52,16 +52,23 @@ class ChatDetailView(LoginRequiredMixin, UserPassesTestMixin, FormMixin, DetailV
 
         context['chat_messages'] = chat_messages
         context['chat_users'] = chat_users
-        context['form'] = self.get_form()
+        context['form'] = SendMessage()
         return context
 
-    def post(self,request, *args, **kwargs):
+
+class ChatFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
+    template_name = 'chat/chatroom.html'
+    form_class = SendMessage
+    model = Chatroom
+    slug_field = 'token'
+    slug_url_kwarg = 'token'
+
+    def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        form = self.get_form()
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
+        return super().post(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse_lazy('chat-chatroom', kwargs={'token': self.object.token})
 
     def form_valid(self, form):
         # Obtain Chatroom Object
@@ -73,7 +80,21 @@ class ChatDetailView(LoginRequiredMixin, UserPassesTestMixin, FormMixin, DetailV
         comment.chatroom = chat
         comment.save()
 
-        return super(ChatDetailView,self).form_valid(form)
+        ser_instance = serializers.serialize('json', [comment, ])
+
+        # return super(ChatFormView,self).form_valid(form)
+        return JsonResponse({"instance": ser_instance}, status=200)
+
+
+# Get Requests gets the ChatDisplay View, Post Requests get the FormView
+class ChatDetail(View):
+    def get(self, request, *args, **kwargs):
+        view = ChatDisplay.as_view()
+        return view(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        view = ChatFormView.as_view()
+        return view(request, *args, **kwargs)
 
 
 class ChatCreateView(LoginRequiredMixin, CreateView):
@@ -92,6 +113,7 @@ class ChatCreateView(LoginRequiredMixin, CreateView):
         obj.subscribers.add(self.request.user)
         obj.save()
         return super().form_valid(form)
+
 
 
 class ChatUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -138,13 +160,18 @@ def register(request):
     return render(request, 'chat/register.html', {'form': form})
 
 
+@login_required()
 def joinChat(request):
     if request.method == 'POST':
         form = JoinChatForm(request.POST)
         if form.is_valid():
             chat = Chatroom.objects.get(token=form.cleaned_data['token'])
-            chat.subscribers.add(request.user)
-            return redirect('chat-chatroom', chat.token)
+            if form.cleaned_data['password'] == chat.password:
+                chat.subscribers.add(request.user)
+                return redirect('chat-chatroom', chat.token)
+            else:
+                messages.success(request, f"Wrong Chatroom Token or Password.")
+                return render(request, 'chat/chatroom-join.html', context={'form': form})
     else:
         form = JoinChatForm()
     return render(request, 'chat/chatroom-join.html', context={'form': form})
