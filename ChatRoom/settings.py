@@ -11,7 +11,10 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import os
 from pathlib import Path
+import json
 
+#with open('/etc/config.json') as config_file:
+#    config = json.load(config_file)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -24,7 +27,7 @@ SECRET_KEY = '41pb0oo9xb^44*b4ws49&^v$f#&o2mb9%_p2!-+f=-rf29-v86'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+#Server ip
 ALLOWED_HOSTS = ['*']
 
 
@@ -103,9 +106,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/3.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -118,14 +118,9 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.1/howto/static-files/
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
-# allows django to find the static folder
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
