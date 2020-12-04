@@ -40,16 +40,31 @@ ul {
   position: relative;
 }
 
+.message-input{
+    width: 530px;
+}
 
+.rounded-border{
+    border: 4px solid black;
+}
+.message-history{
+    font-family: Inconsolata;
+}
 .chat-area-1{
-  max-height:100%;
-  overflow:auto;
+    max-height:100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .chat-area-2{
-  height:750px;
+    height:750px;
+    word-break: break-all;
 }
 
+.centered-inconsolata{
+    font-family: Inconsolata;
+    text-align: center;
+}
 .username{
   margin-left:10px;
   margin-right:0px;
@@ -67,13 +82,6 @@ ul {
 .SendMessage {
   margin-top:100px;
   margin-left: 300px;
-}
-
-.messageHistory {
-  text-align: center;
-  width: 500px;
-  height:300px;
-  overflow: scroll;
 }
 
 .site-header .navbar-nav .nav-link {

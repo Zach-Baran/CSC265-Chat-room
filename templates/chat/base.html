@@ -10,6 +10,7 @@
 
     <!-- Font CSS -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@500&display=swap" rel="stylesheet">
 
     <!-- Custom CSS-->
     <link rel="stylesheet" type="text/css "href="{% static 'chat/main.css' %}">
@@ -28,7 +29,7 @@
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
               <a class="nav-item nav-link" href="{% url 'chat-about' %}">About</a>
-              <a class="nav-item nav-link" href="{% url 'chat-chatroom-join' %}">Join Chatroom</a>
+              <a class="nav-item nav-link" href="{% url 'chat-chatroom-join' %}">Join Chatroom <i class="far fa-comments"></i></a>
             </div>
             <!-- Navbar Right Side -->
             <div class="navbar-nav">

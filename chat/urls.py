@@ -15,6 +15,7 @@ urlpatterns = [
     path('chatroom/<slug:token>/delete/', ChatDeleteView.as_view(), name='chat-chatroom-delete'),
     path('join/', views.joinChat, name='chat-chatroom-join'),
     path('create/', ChatCreateView.as_view(), name='chat-create'),
-    path('chatroom/<int:pk>/query/', views.ajax_process, name='chat-get-messages')
+    path('chatroom/<str:token>/query/', views.ajax_process, name='chat-get-messages'),
+    path('chatroom/<str:token>/send/', views.messageProcess, name='chat-send-message')
 
 ]

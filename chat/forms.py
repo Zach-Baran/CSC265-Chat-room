@@ -46,21 +46,33 @@ class UserLoginForm(AuthenticationForm):
 
 
 class ChatForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ChatForm, self).__init__(*args, **kwargs)
+
+    name = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'formStyle', 'placeholder': 'Chat Name', 'id': 'nameID'}))
+
     class Meta:
         model = Chatroom
         fields = ['name', ]
 
 
 class SendMessage(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SendMessage, self).__init__(*args, **kwargs)
+
+    content = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'message-input ', 'placeholder': 'Enter a message...', 'id': 'sendID'}
+    ))
     class Meta:
         model = Messages
-        fields = ('content',)
-
+        fields=['content']
 
 class JoinChatForm(forms.Form):
-        token = forms.CharField(label='search', max_length=6, widget=forms.TextInput(attrs={'placeholder': 'Input Chat Room Token'}))
+    def __init__(self, *args, **kwargs):
+        super(JoinChatForm, self).__init__(*args, **kwargs)
 
-
+    token = forms.CharField(label='search', max_length=6, widget=forms.TextInput(attrs={'class': 'formStyle', 'placeholder': 'Input Chat Room Token'}))
 
 
 

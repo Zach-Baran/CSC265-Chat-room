@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -8,6 +8,7 @@ from django.views.generic.edit import FormMixin, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .forms import UserRegisterForm, ChatForm, SendMessage, JoinChatForm
 from .models import Messages, Chatroom
+from .utils import AjaxableResponseMixin
 from django.contrib.auth.models import User
 
 
@@ -77,6 +78,7 @@ class ChatDetailView(LoginRequiredMixin, UserPassesTestMixin, FormMixin, DetailV
         return super(ChatDetailView,self).form_valid(form)
 
 
+
 class ChatCreateView(LoginRequiredMixin, CreateView):
     model = Chatroom
     form_class = ChatForm
@@ -121,6 +123,8 @@ class ChatDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             return True
 
 
+
+
 def about(request):
     return render(request, 'chat/about.html')
 
@@ -139,21 +143,26 @@ def register(request):
     return render(request, 'chat/register.html', {'form': form})
   
 
-def ajax_process(request, pk):
-    chat = Chatroom.objects.get(id=pk)
+def ajax_process(request, **kwargs):
+    token = kwargs.get('token')
+    chat = Chatroom.objects.get(token=token)
     chat_messages = chat.messages_set.all()
     allData = []
     for message in chat_messages:
+        string = str(message.date)
+        timestamp = string[11:19]
         data = {
             'content' : message.content,
             'author' : message.author.username,
-            'date' : message.date,
+            'date' : timestamp,
             'id' : message.id
         }
         allData.append(data)
 
     return JsonResponse(allData, safe=False)
 
+def messageProcess(request, **kwargs):
+    print('ayo')
 
 def joinChat(request):
     if request.method == 'POST':
