@@ -13,6 +13,7 @@ urlpatterns = [
     path('chatroom/<str:token>/', ChatDetail.as_view(), name='chat-chatroom'),
     path('chatroom/<slug:token>/update/', ChatUpdateView.as_view(), name='chat-chatroom-update'),
     path('chatroom/<slug:token>/delete/', ChatDeleteView.as_view(), name='chat-chatroom-delete'),
+    path('chatroom/<slug:token>/leave/', views.leaveChat, name='chat-chatroom-leave'),
     path('join/', views.joinChat, name='chat-chatroom-join'),
     path('create/', ChatCreateView.as_view(), name='chat-create'),
 ]

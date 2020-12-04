@@ -178,3 +178,12 @@ def joinChat(request):
     else:
         form = JoinChatForm()
     return render(request, 'chat/chatroom-join.html', context={'form': form})
+
+
+@login_required()
+def leaveChat(request, token):
+    user = request.user
+    chat = Chatroom.objects.get(token=token)
+    chat.subscribers.remove(user)
+    messages.success(request, f'You have left {chat.name}!')
+    return redirect('chat-home')
