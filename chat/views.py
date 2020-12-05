@@ -11,6 +11,8 @@ from django.views.generic.detail import  SingleObjectMixin
 from django.views.generic.edit import FormMixin, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.hashers import check_password
+from django import forms
+from datetime import timedelta
 from .forms import UserRegisterForm, ChatForm, SendMessage, JoinChatForm
 from .models import Messages, Chatroom
 from .utils import AjaxableResponseMixin
@@ -84,8 +86,8 @@ class ChatFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
 
         ser_instance = serializers.serialize('json', [comment, ])
 
-        # return super(ChatFormView,self).form_valid(form)
-        return JsonResponse({"instance": ser_instance}, status=200)
+        return super(ChatFormView,self).form_valid(form)
+        # return JsonResponse({"instance": ser_instance}, status=200)
 
 
 # Get Requests gets the ChatDisplay View, Post Requests get the FormView
@@ -125,8 +127,9 @@ class ChatUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     slug_field = 'token'
     slug_url_kwarg = 'token'
 
-    def get_form(self, form_class=JoinChatForm):
-        form = form_class
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['password'].widget = forms.PasswordInput()
         return form
 
     def test_func(self):
@@ -174,7 +177,7 @@ def ajax_process(request, **kwargs):
     chat_messages = chat.messages_set.all()
     allData = []
     for message in chat_messages:
-        string = str(message.date)
+        string = str(message.date-timedelta(hours=5))
         timestamp = string[11:19]
         data = {
             'content' : message.content,

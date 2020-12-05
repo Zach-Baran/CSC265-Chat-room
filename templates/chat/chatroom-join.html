@@ -7,12 +7,18 @@
         <div class = "col" style="text-align:center">
         <h1 >Join chatroom! <i class="far fa-comments"></i></h1>
         </br>
-        <p style="color:white">There is a 6-character token associated with every chatroom. Enter the token of the chatroom you would like to join.</p>
+        <p style="color:white">There is a 6-character token associated with every chatroom. Enter the token & the password of the chatroom you would like to join.</p>
          <form method = "POST">
                 {% csrf_token %}
                 <div class = "row justify-content-center">
                     <div class = "form-group">
                         {{ form.token }}
+                    </div>
+                </div>
+                <div class = "row justify-content-center">
+                    <div class = "form-group">
+                        {{ form.password }}
+
                         <button type="submit" class="btn btn-dark btn-block">Join</button>
                     </div>
                 </div>

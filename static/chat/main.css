@@ -35,6 +35,7 @@ ul {
   height: 500px;
   position: relative;
 }
+
 .scroll-area-2{
   height: 580px;
   position: relative;
@@ -42,6 +43,7 @@ ul {
 
 .message-input{
     width: 530px;
+
 }
 
 .rounded-border{
@@ -52,12 +54,11 @@ ul {
 }
 .chat-area-1{
     max-height:100%;
-    overflow-y: scroll;
     overflow-x: hidden;
 }
 
 .chat-area-2{
-    height:750px;
+    max-height:750px;
     word-break: break-all;
 }
 
@@ -238,7 +239,7 @@ a.article-title:hover {
 }
 
  ::-webkit-input-placeholder {
-     color: #ecf0f1;
+     color: black;
   }
 
   :-moz-placeholder { /* Firefox 18- */
