@@ -52,6 +52,8 @@ class ChatForm(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'formStyle', 'placeholder': 'Chat Name', 'id': 'nameID'}))
 
+    password = forms.CharField(label='password', max_length=25, widget=forms.PasswordInput(attrs={'class': 'formStyle', 'placeholder': 'Enter password...'}))
+
     class Meta:
         model = Chatroom
         fields = ['name', 'password']
@@ -62,7 +64,7 @@ class SendMessage(forms.ModelForm):
         super(SendMessage, self).__init__(*args, **kwargs)
 
     content = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'message-input ', 'placeholder': 'Enter a message...', 'id': 'sendID'}
+        attrs={'autocomplete': 'off', 'class': 'message-input ', 'placeholder': 'Enter a message...', 'id': 'sendID'}
     ))
     class Meta:
         model = Messages
@@ -72,5 +74,5 @@ class JoinChatForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(JoinChatForm, self).__init__(*args, **kwargs)
 
-    token = forms.CharField(label='search', max_length=6, widget=forms.TextInput(attrs={'class': 'formStyle', 'placeholder': 'Input Chat Room Token'}))
-    password = forms.CharField(label='password', max_length=25, widget=forms.PasswordInput())
+    token = forms.CharField(label='Token', max_length=6, widget=forms.TextInput(attrs={'class': 'formStyle', 'placeholder': 'Enter Chat Room Token'}))
+    password = forms.CharField(label='Password', max_length=25, widget=forms.PasswordInput(attrs={'class': 'formStyle', 'placeholder': 'Enter password...'}))
