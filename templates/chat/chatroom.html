@@ -2,80 +2,77 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-<div class = "container-fluid">
-    <div class="row justify-content-center">
-        <h1>{{ chatroom.name }} [{{ chatroom.token }}] </h1>
-    </div>
-    {% if object.host == user %}
-            <div class="row justify-content-center">
-                <h5>
-                    <a class="btn btn-info" href="{% url 'chat-chatroom-update' object.token %}">Update <i class="far fa-edit"></i></a>
-                    <a class="btn btn-danger" href="{% url 'chat-chatroom-delete' object.token %}">Delete <i class="far fa-trash-alt"></i></a>
-                </h5>
-            </div>
-    {% else %}
-            <div class="row justify-content-center">
-                <h5>
-                    <a class="btn btn-info" href="{% url 'chat-chatroom-leave' object.token %}">Leave</a>
-                </h5>
-            </div>
-    {% endif %}
-    <div class = "row my-3 no-gutters">
-        <div class ="col-lg-9">
-            <div class="row-fluid rounded-border">
-                <div class ="scroll-area-1">
-                    <div class="chat-area-1">
-                        <div class="chat-area-2">
-                            <div class="message-history">
-                            </div>
-                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class ="row-fluid no-gutters rounded-border ">
-                <div class = "send-message">
-                    <form method="POST" class = "send-message-form" enctype="multipart/form-data" >
-                        {% csrf_token %}
-                        <div class="form-group row" style="margin-top:20px">
-                            <div class =" col-md-1" style ="text-align: right">
-                                {{  user }}:
-                            </div>
-                            <div class = "col-md-8" style="padding-left:0px">
-                                <!--Input for sending messages-->
-                                {{ form.content }}
-                            </div>
-                            <div class="col" style ="margin-right:25px">
-                                <!--Button to send message-->
-                                <button type="submit"  class="btn btn-dark btn-block">Send <i class="far fa-paper-plane"></i></button>
-                            </div>
+<div class="row justify-content-center">
+    <h1>{{ chatroom.name }} [{{ chatroom.token }}] </h1>
+</div>
+{% if object.host == user %}
+        <div class="row justify-content-center">
+            <h5>
+                <a class="btn btn-info" href="{% url 'chat-chatroom-update' object.token %}">Update <i class="far fa-edit"></i></a>
+                <a class="btn btn-danger" href="{% url 'chat-chatroom-delete' object.token %}">Delete <i class="far fa-trash-alt"></i></a>
+            </h5>
+        </div>
+{% else %}
+        <div class="row justify-content-center">
+            <h5>
+                <a class="btn btn-info" href="{% url 'chat-chatroom-leave' object.token %}">Leave</a>
+            </h5>
+        </div>
+{% endif %}
+<div class = "row my-3 no-gutters">
+    <div class ="col-lg-9">
+        <div class="row-fluid rounded-border">
+            <div class ="scroll-area-1" style="background-color: #f8f8ff">
+                <div class="chat-area-1">
+                    <div class="chat-area-2">
+                        <div class="message-history">
                         </div>
-                    </form>
+                     </div>
                 </div>
             </div>
         </div>
-        <div class = "col-lg-3 rounded-border">
-            <div class="scroll-area-2">
-                <div class="chat-area-1">
-                    <div class="chat-area-2">
-                        <div class = "centered-inconsolata">
-                            <h1 style="text-align:center">User List <i class="fas fa-users"></i></h1>
-                            <!--Users to be listed here-->
-                            {% for user in chat_users %}
-                                <div>
-                                {% if user == chatroom.host %}
-                                    {{ user }} <i class="fas fa-crown"></i>
-                                {% else %}
-                                    {{ user }}
-                                {% endif %}
-                                </div>
-                            {% endfor %}
-                        </div>
+        <div class ="row justify-content-around no-gutters rounded-border ">
+            <form method="POST" enctype="multipart/form-data" style="width:100%">
+                {% csrf_token %}
+                <div class="form-group row justify-content-around" style="margin-top:20px">
+                    <div class ="col-2" style ="text-align: right; padding:0 ">
+                       {{ user }} :
+                    </div>
+                    <div class ="col-6" style="width:100%; padding:0;" >
+                        <!--Input for sending messages-->
+                        {{ form.content }}
+                    </div>
+                    <div class="col-3" style ="margin-right:25px">
+                        <!--Button to send message-->
+                        <button type="submit"  class="btn btn-dark btn-block">Send <i class="far fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class = "col-lg-3 rounded-border">
+        <div class="scroll-area-2">
+            <div class="chat-area-1">
+                <div class="chat-area-2">
+                    <div class = "centered-inconsolata">
+                        <h1 style="text-align:center">User List <i class="fas fa-users"></i></h1>
+                        <!--Users to be listed here-->
+                        {% for user in chat_users %}
+                            <div>
+                            {% if user == chatroom.host %}
+                                {{ user }} <i class="fas fa-crown"></i>
+                            {% else %}
+                                {{ user }}
+                            {% endif %}
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <script>
